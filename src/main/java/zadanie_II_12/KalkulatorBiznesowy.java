@@ -2,8 +2,13 @@ package zadanie_II_12;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.Enumeration;
 
-public class KalkulatorBiznesowy extends JFrame {
+public class KalkulatorBiznesowy extends JFrame implements ActionListener {
+    DecimalFormat decimalFormat = new DecimalFormat("#0.00");
     private JLabel vatRatesLabel, netAmountLabel, grossAmountLabel, taxAmountLabel, taxAmountResultLabel;
     private JRadioButton firstVatRate, secondVatRate, thirdVatRate, fourthVatRate;
     private ButtonGroup menuItem;
@@ -13,7 +18,7 @@ public class KalkulatorBiznesowy extends JFrame {
     public KalkulatorBiznesowy() { super("Kalkulator bizensowy"); }
 
     public void init() {
-        setSize(500, 150);
+        setSize(400, 150);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -32,11 +37,16 @@ public class KalkulatorBiznesowy extends JFrame {
         thirdVatRate = new JRadioButton();
         fourthVatRate = new JRadioButton();
         netAmount = new JTextField("");
+        netAmount.setHorizontalAlignment(JTextField.RIGHT);
         grossAmount = new JTextField("");
+        grossAmount.setHorizontalAlignment(JTextField.RIGHT);
         calculateNetButton = new JButton("OBLICZ");
+        calculateNetButton.setForeground(new Color(255, 0, 0));
         calculateGrossButton = new JButton("OBLICZ");
+        calculateGrossButton.setForeground(new Color(0, 0, 255));
 
         firstVatRate.setText("0%");
+        firstVatRate.setSelected(true);
         firstVatRate.putClientProperty("value", 0);
         secondVatRate.setText("5%");
         secondVatRate.putClientProperty("value", 5);
@@ -55,21 +65,76 @@ public class KalkulatorBiznesowy extends JFrame {
         flowPanel.add(secondVatRate);
         flowPanel.add(thirdVatRate);
         flowPanel.add(fourthVatRate);
+        flowPanel.setBackground(new Color(128, 128, 128));
 
-        gridPanel.add(vatRatesLabel);
+        gridPanel.add(netAmountLabel);
         gridPanel.add(netAmount);
         gridPanel.add(calculateNetButton);
+        calculateNetButton.addActionListener(this);
+
         gridPanel.add(taxAmountLabel);
-        gridPanel.add(taxAmountResultLabel);
+        JPanel floatedRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        floatedRight.add(taxAmountResultLabel);
+        gridPanel.add(floatedRight);
         gridPanel.add(new JLabel(""));
+
         gridPanel.add(grossAmountLabel);
         gridPanel.add(grossAmount);
         gridPanel.add(calculateGrossButton);
+        calculateGrossButton.addActionListener(this);
 
         mainPanel.add(flowPanel, BorderLayout.NORTH);
         mainPanel.add(gridPanel, BorderLayout.CENTER);
 
         getContentPane().add(mainPanel);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+        try {
+            Object source = actionEvent.getSource();
+            if (source == calculateNetButton) calculateNet();
+            if (source == calculateGrossButton) calculateGross();
+        } catch (Exception exception) {
+            // add error to the `tax field`
+            taxAmountResultLabel.setText("Podane wartosci sa niepoprawne");
+        }
+    }
+
+    private void calculateNet() {
+        AbstractButton abstractButton = getSelectedTaxRate();
+        int vatRate = (int) abstractButton.getClientProperty("value");
+        double gross = Double.parseDouble(grossAmount.getText());
+        double tax = gross * vatRate / 100;
+        double net = gross - tax;
+
+        netAmount.setText(decimalFormat.format(net));
+        taxAmountResultLabel.setText(decimalFormat.format(tax));
+    }
+
+    private void calculateGross() {
+        AbstractButton abstractButton = getSelectedTaxRate();
+        int vatRate = (int) abstractButton.getClientProperty("value");
+        double gross = Double.parseDouble(netAmount.getText());
+        double tax = gross * vatRate / 100;
+        double net = gross + tax;
+
+        grossAmount.setText(decimalFormat.format(net));
+        taxAmountResultLabel.setText(decimalFormat.format(tax));
+    }
+
+    private AbstractButton getSelectedTaxRate() {
+        AbstractButton selectedRadioButton = new JRadioButton();
+        for(Enumeration<AbstractButton> radioGroup = menuItem.getElements(); radioGroup.hasMoreElements();) {
+            AbstractButton radioButton = radioGroup.nextElement();
+
+            if(radioButton.isSelected()) {
+                selectedRadioButton = radioButton;
+                break;
+            }
+        }
+
+        return selectedRadioButton;
     }
 
     public static void main(String[] args) {
