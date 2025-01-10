@@ -79,4 +79,24 @@ public class Clinic {
     public void addAppointment(Appointment appointment) {
         appointments.add(appointment);
     }
+
+    public void showPatientsAppointments(int patientId) {
+        // dodane na zajeciach
+//        for(int i = 0; i < appointments.size(); i++) {
+//            System.out.println(appointments.get(i));
+//        }
+        for(Appointment appointment : appointments) {
+            if (appointment.getPatient().getPatientId() == patientId) {
+                System.out.println(appointment);
+            }
+        }
+    }
+
+    public void showDoctorsAppointments(int doctorId) {
+        for(Appointment appointment : appointments) {
+            if(appointment.getDoctor().getDoctorId() == doctorId) {
+                System.out.println(appointment);
+            }
+        }
+    }
 }

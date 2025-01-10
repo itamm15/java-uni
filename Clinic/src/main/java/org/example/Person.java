@@ -30,4 +30,8 @@ public abstract class Person {
     public String getAddress() {
         return address;
     }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

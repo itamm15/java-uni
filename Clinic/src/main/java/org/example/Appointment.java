@@ -14,7 +14,7 @@ public class Appointment {
         this.patient = patient;
         this.date = date;
         this.description = description;
-        this.appointmentId = appointmentId++;
+        appointmentId++;
     }
 
     public static int getAppointmentId() {

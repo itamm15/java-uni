@@ -37,11 +37,13 @@ public class Main {
         Appointment Second = new Appointment(Lukas, Grazyna, LocalDate.of(2024, 8, 10), "Skurcze lewego uda");
         Appointment Third = new Appointment(Thomas, Maria, LocalDate.of(2024, 12, 26), "Krztusiec");
         Appointment Fourth = new Appointment(Thomas, Grzegorz, LocalDate.of(2025, 1, 4), "Lekkie zapalenie krtani");
+        Appointment Fifth = new Appointment(Ursula, Maria, LocalDate.of(2025, 1, 4), "Lekkie zapalenie krtani");
 
         clinic.addAppointment(First);
         clinic.addAppointment(Second);
         clinic.addAppointment(Third);
         clinic.addAppointment(Fourth);
+        clinic.addAppointment(Fifth);
 
         // drugie wylistowanie;
         System.out.println("================================================================");
@@ -64,5 +66,17 @@ public class Main {
         System.out.println("================================================================");
         clinic.getDoctors();
         clinic.getPatients();
+
+        // wizyty pacjenta
+        System.out.println("================================================================");
+        System.out.println("Wizyty pacjenta");
+        System.out.println("================================================================");
+        clinic.showPatientsAppointments(Maria.getPatientId());
+
+        // wizyty doktora
+        System.out.println("================================================================");
+        System.out.println("Wizyty doktora");
+        System.out.println("================================================================");
+        clinic.showDoctorsAppointments(Ursula.getDoctorId());
     }
 }
